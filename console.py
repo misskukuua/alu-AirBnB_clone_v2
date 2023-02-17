@@ -17,8 +17,14 @@ class HBNBCommand(cmd.Cmd):
     """this class is entry point of the command interpreter
     """
     prompt = "(hbnb) "
-    all_classes = {"BaseModel", "User", "State", "City",
-                   "Amenity", "Place", "Review"}
+    all_classes = {"BaseModel": BaseModel,
+                   "User": User,
+                   "State": State,
+                   "City": City,
+                   "Amenity": Amenity,
+                   "Place": Place,
+                   "Review": Review
+                   }
 
     def emptyline(self):
         """Ignores empty spaces"""
@@ -221,15 +227,15 @@ class HBNBCommand(cmd.Cmd):
         new_list.append(args[0])
         try:
             my_dict = eval(
-                args[1][args[1].find('{'):args[1].find('}')+1])
+                args[1][args[1].find('{'):args[1].find('}') + 1])
         except Exception:
             my_dict = None
         if isinstance(my_dict, dict):
-            new_str = args[1][args[1].find('(')+1:args[1].find(')')]
+            new_str = args[1][args[1].find('(') + 1:args[1].find(')')]
             new_list.append(((new_str.split(", "))[0]).strip('"'))
             new_list.append(my_dict)
             return new_list
-        new_str = args[1][args[1].find('(')+1:args[1].find(')')]
+        new_str = args[1][args[1].find('(') + 1:args[1].find(')')]
         new_list.append(" ".join(new_str.split(", ")))
         return " ".join(i for i in new_list)
 
