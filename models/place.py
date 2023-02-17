@@ -38,7 +38,7 @@ class Place(BaseModel, Base):
     longitude = 0.0
     amenity_ids = []
     """
-     __tablename__ = 'places'
+    __tablename__ = 'places'
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
     user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
     name = Column(String(128), nullable=False)
@@ -60,18 +60,18 @@ class Place(BaseModel, Base):
     else:
         @property
         def reviews(self):
-            #accessing attribute
+            # accessing attribute
             return [review for review in models.storage.all(Review)
                     if review.place_id == self.id]
 
         @property
         def amenities(self):
-            #getting
+            # getting
             return [amenity for amenity in models.storage.all(Amenity)
                     if amenity.id in self.amenity_ids]
 
         @amenities.setter
         def amenities(self, obj):
-         #setting
+            # setting
             if (type(obj) == Amenity):
                 self.amenity_ids.append(obj.id)
