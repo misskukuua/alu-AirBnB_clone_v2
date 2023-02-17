@@ -10,6 +10,15 @@ from models.place import Place
 from models.review import Review
 import shlex
 
+classes = {'BaseModel': BaseModel,
+           'User': User,
+           'Place': Place,
+           'State': State,
+           'City': City,
+           'Amenity': Amenity,
+           'Review': Review
+           }
+
 
 class FileStorage:
     """This class serializes instances to a JSON file and
@@ -32,9 +41,9 @@ class FileStorage:
             for key in dictionary:
                 partition = key.replace('.', ' ')
                 partition = shlex.split(partition)
-                if (partition[0] == cls.__name__):
+                if partition[0] == cls.__name__:
                     dic[key] = self.__objects[key]
-            return (dic)
+            return dic
         else:
             return self.__objects
 
