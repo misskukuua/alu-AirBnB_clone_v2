@@ -24,7 +24,7 @@ if getenv("HBNB_TYPE_STORAGE") == "db":
 
 
 class Place(BaseModel, Base):
-    """ 
+    """
      city_id = ""
      user_id = ""
      name = ""
