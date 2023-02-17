@@ -10,6 +10,15 @@ from models.place import Place
 from models.review import Review
 import shlex
 
+classes = {'BaseModel': BaseModel,
+           'User': User,
+           'Place': Place,
+           'State': State,
+           'City': City,
+           'Amenity': Amenity,
+           'Review': Review
+           }
+
 
 class FileStorage:
     """This class serializes instances to a JSON file and
