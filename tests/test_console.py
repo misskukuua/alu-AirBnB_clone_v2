@@ -20,19 +20,24 @@ from models.engine.file_storage import FileStorage
 
 
 class TestConsole(unittest.TestCase):
+
+
     """this will test the console"""
 
     @classmethod
     def setUpClass(cls):
+
         """setup for the test"""
         cls.consol = HBNBCommand()
 
     @classmethod
     def teardown(cls):
+
         """at the end of the test this will tear it down"""
         del cls.consol
 
     def tearDown(self):
+
         """Remove temporary file (file.json) created as a result"""
         try:
             os.remove("file.json")
@@ -40,12 +45,14 @@ class TestConsole(unittest.TestCase):
             pass
 
     def test_pep8_console(self):
+
         """Pep8 console.py"""
         style = pep8.StyleGuide(quiet=True)
         p = style.check_files(["console.py"])
         self.assertEqual(p.total_errors, 0, 'fix Pep8')
 
     def test_docstrings_in_console(self):
+
         """checking for docstrings"""
         self.assertIsNotNone(console.__doc__)
         self.assertIsNotNone(HBNBCommand.emptyline.__doc__)
@@ -61,18 +68,21 @@ class TestConsole(unittest.TestCase):
         self.assertIsNotNone(HBNBCommand.default.__doc__)
 
     def test_emptyline(self):
+
         """Test empty line input"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("\n")
             self.assertEqual('', f.getvalue())
 
     def test_quit(self):
+
         """test quit command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("quit")
             self.assertEqual('', f.getvalue())
 
     def test_create(self):
+
         """Test create command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("create")
@@ -90,6 +100,7 @@ class TestConsole(unittest.TestCase):
                 "[[User]", f.getvalue()[:7])
 
     def test_show(self):
+
         """Test show command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("show")
@@ -109,6 +120,7 @@ class TestConsole(unittest.TestCase):
                 "** no instance found **\n", f.getvalue())
 
     def test_destroy(self):
+
         """Test destroy command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("destroy")
@@ -128,6 +140,7 @@ class TestConsole(unittest.TestCase):
                 "** no instance found **\n", f.getvalue())
 
     def test_all(self):
+
         """Test all command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("all asdfsdfsd")
@@ -137,6 +150,7 @@ class TestConsole(unittest.TestCase):
             self.assertEqual("[]\n", f.getvalue())
 
     def test_update(self):
+
         """Test update command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("update")
@@ -168,6 +182,7 @@ class TestConsole(unittest.TestCase):
                 "** value missing **\n", f.getvalue())
 
     def test_z_all(self):
+
         """Test alternate all command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("asdfsdfsd.all()")
@@ -178,6 +193,7 @@ class TestConsole(unittest.TestCase):
             self.assertEqual("[]\n", f.getvalue())
 
     def test_z_count(self):
+
         """Test count command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("asdfsdfsd.count()")
@@ -188,6 +204,7 @@ class TestConsole(unittest.TestCase):
             self.assertEqual("0\n", f.getvalue())
 
     def test_z_show(self):
+
         """Test alternate show command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("safdsa.show()")
@@ -199,6 +216,7 @@ class TestConsole(unittest.TestCase):
                 "** no instance found **\n", f.getvalue())
 
     def test_destroy(self):
+
         """Test alternate destroy command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("Galaxy.destroy()")
@@ -210,6 +228,7 @@ class TestConsole(unittest.TestCase):
                 "** no instance found **\n", f.getvalue())
 
     def test_update(self):
+
         """Test alternate destroy command inpout"""
         with patch('sys.stdout', new=StringIO()) as f:
             self.consol.onecmd("sldkfjsl.update()")
