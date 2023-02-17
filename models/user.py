@@ -17,7 +17,7 @@ class User(BaseModel, Base):
         first_name: first name
         last_name: last name
     """
-    __hbnb_dev_db.users__ = "users"
+    __tablename__ = "hbnb_dev_db.users"
     email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)
     first_name = Column(String(128))
