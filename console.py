@@ -32,45 +32,34 @@ class HBNBCommand(cmd.Cmd):
         """Quit command to exit the program at end of file"""
         return True
 
-    def do_create(self, arg):
-    """
-    Creates a new instance of a specified class and saves it to the storage
-    Usage: create <Class name> <param 1> <param 2> <param 3>...
-    Param syntax: <key name>=<value>
-    Value syntax:
-    - String: "<value>" => starts with a double quote. Escape double quotes with a backslash \ and replace all underscores _ with spaces.
-    - Float: <unit>.<decimal> => contains a dot .
-    - Integer: <number> => default case.
-    """
-    args = arg.split()
-    if not args:
-        print("** class name missing **")
-        return
-
-    class_name = args[0]
-    if class_name not in models:
-        print("** class doesn't exist **")
-        return
-
-    kwargs = {}
-    for arg in args[1:]:
+    def do_create(self, line):
+        """Creates a new instance of BaseModel, saves it
+        Exceptions:
+            SyntaxError: when there is no args given
+            NameError: when there is no object taht has the name
+        """
         try:
-            key, value = arg.split('=')
-            value = value.replace('\\"', '"').replace('_', ' ')
-            if value.startswith('"') and value.endswith('"'):
-                value = value[1:-1]
-            elif '.' in value:
-                value = float(value)
-            else:
-                value = int(value)
-            kwargs[key] = value
-        except (ValueError, AttributeError):
-            pass
-
-    new_instance = models[class_name](**kwargs)
-    new_instance.save()
-    print(new_instance.id)
-
+            if not line:
+                raise SyntaxError()
+            my_list = line.split(" ")
+            obj = eval("{}()".format(my_list[0]))
+            print("{}".format(obj.id))
+            for num in range(1, len(my_list)):
+                my_list[num] = my_list[num].replace('=', ' ')
+                attributes = split(my_list[num])
+                attributes[1] = attributes[1].replace('_', ' ')
+                try:
+                    var = eval(attributes[1])
+                    attributes[1] = var
+                except:
+                    pass
+                if type(attributes[1]) is not tuple:
+                    setattr(obj, attributes[0], attributes[1])
+            obj.save()
+        except SyntaxError:
+            print("** class name missing **")
+        except NameError:
+            print("** class doesn't exist **")
 
     def do_show(self, line):
         """Prints the string representation of an instance
