@@ -29,11 +29,11 @@ class FileStorage:
             json.dump(temp, f)
 
     def delete(self, obj=None):
-        """Para eliminar obj de __objects si está dentro"""
-        if not obj:
+        """to delete obj objects if your inside"""
+        if obj None:
             return
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        del FileStorage.__objects[key]
+        key = "{}.{}".format(type(obj).__name__,obj.id)
+           del Filestorage.__objects[key]
 
     def reload(self):
         """Loads storage dictionary from file"""
