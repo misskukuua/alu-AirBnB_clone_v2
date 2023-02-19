@@ -134,20 +134,46 @@ class HBNBCommand(cmd.Cmd):
                 dic[key] = value
         return (dic)
 
-    def do_create(self, args):
-        """Creates a new instance of BaseModel """
-        args = args.split()
-        if len(args) == 0:
-            print("** class name missing **")
-            return
-        if args[0] in HBNBCommand.classes:
-            dic = self.dic_creator(args[1:])
-            instance = HBNBCommand.classes[args[0]](**dic)
+    def do_create(self, arg):
+        """Creates a new instance of a Model"""
+        if arg:
+            try:
+                args = arg.split()
+                template = models.dummy_classes[args[0]]
+                new_instance = template()
+                try:
+                    for pair in args[1:]:
+                        pair_split = pair.split("=")
+                        if (hasattr(new_instance, pair_split[0])):
+                            value = pair_split[1]
+                            flag = 0
+                            if (value.startswith('"')):
+                                value = value.strip('"')
+                                value = value.replace("\\", "")
+                                value = value.replace("_", " ")
+                            elif ("." in value):
+                                try:
+                                    value = float(value)
+                                except:
+                                    flag = 1
+                            else:
+                                try:
+                                    value = int(value)
+                                except:
+                                    flag = 1
+                            if (not flag):
+                                setattr(new_instance, pair_split[0], value)
+                        else:
+                            continue
+                    new_instance.save()
+                    print(new_instance.id)
+                except:
+                    new_instance.rollback()
+            except:
+                print("** class doesn't exist **")
+                models.storage.rollback()
         else:
-            print("** class doesn't exist **")
-            return
-        print(instance.id)
-        instance.save()
+            print("** class name missing **")
 
     def help_create(self):
         """ Help information for the create method """
