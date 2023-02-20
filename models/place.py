@@ -10,8 +10,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from os import getenv
+    if getenv("HBNB_TYPE_STORAGE") == "db":
 
-if getenv("HBNB_TYPE_STORAGE") == "db":
     place_amenity = Table('place_amenity', Base.metadata,
                           Column('place_id',
                                  String(60),
