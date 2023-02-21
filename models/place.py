@@ -10,7 +10,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from os import getenv
-    if getenv("HBNB_TYPE_STORAGE") == "db":
+if getenv("HBNB_TYPE_STORAGE") == "db":
 
     place_amenity = Table('place_amenity', Base.metadata,
                           Column('place_id',
@@ -38,6 +38,7 @@ class Place(BaseModel, Base):
      amenity_ids = []
     """
     __tablename__ = 'places'
+
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
     user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
     name = Column(String(128), nullable=False)
