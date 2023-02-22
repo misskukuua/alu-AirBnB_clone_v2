@@ -45,7 +45,7 @@ class HBNBCommand(cmd.Cmd):
             obj = eval("{}()".format(my_list[0]))
             print("{}".format(obj.id))
             for num in range(1, len(my_list)):
-                my_list[num] = my_list[num].replace('=', ' ')
+                my_list[num] = my_list[num]
                 attributes = split(my_list[num])
                 attributes[1] = attributes[1].replace('_', ' ')
                 try:
