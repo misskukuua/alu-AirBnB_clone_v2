@@ -26,21 +26,14 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """initialize object"""
-        user = os.getenv('HBNB_MYSQL_USER')
-        password = os.getenv('HBNB_MYSQL_PWD')
-        host = os.getenv('HBNB_MYSQL_HOST')
-        database = os.getenv('HBNB_MYSQL_DB')
-
-        self.__engine = sqlalchemy.create_engine(
-            'mysql+mysqldb://{}:{}@{}:3306/{}'
-            .format(user,
-                    password,
-                    host,
-                    database), pool_pre_ping=True)
+        """ init method """
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
+            os.getenv('HBNB_MYSQL_USER'),
+            os.getenv('HBNB_MYSQL_PWD'),
+            os.getenv('HBNB_MYSQL_HOST'),
+            os.getenv('HBNB_MYSQL_DB')), pool_pre_ping=True)
 
         if os.getenv('HBNB_ENV') == "test":
-            # from models.base_model import Base
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
@@ -75,14 +68,16 @@ class DBStorage:
             self.__session.delete(obj)
             self.save()
 
-    def reload(self):
+    def reload(self, remove=False):
         """ reload method """
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         session = scoped_session(session_factory)
+        if remove:
+            session.remove()
         self.__session = session()
 
-    # def close(self):
-    #     """ close method """
-    #     self.reload(remove=True)
+    def close(self):
+        """ close method """
+        self.reload(remove=True)
