@@ -42,15 +42,22 @@ class BaseModel:
                 self.updated_at = datetime.now()
         else:
             self.id = str(uuid.uuid4())
-            self.created_at = self.updated_at = datetime.now()
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            models.storage.new(self)
+
+    # def __str__(self):
+    #     """returns a string
+    #     Return:
+    #         returns a string of class name, id, and dictionary
+    #     """
+    #     return "[{}] ({}) {}".format(
+    #         type(self).__name__, self.id, self.__dict__)
 
     def __str__(self):
-        """returns a string
-        Return:
-            returns a string of class name, id, and dictionary
-        """
-        return "[{}] ({}) {}".format(
-            type(self).__name__, self.id, self.__dict__)
+        """Returns a string representation of the instance"""
+        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
+        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
 
     def __repr__(self):
         """return a string representaion
