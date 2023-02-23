@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ New engine DBStorage """
+import sqlalchemy
 from sqlalchemy import (create_engine)
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
@@ -32,7 +33,7 @@ class DBStorage:
             os.getenv('HBNB_MYSQL_HOST'),
             os.getenv('HBNB_MYSQL_DB')), pool_pre_ping=True)
 
-        if os.getenv('HBNB_ENV') == 'test':
+        if os.getenv('HBNB_ENV') == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):

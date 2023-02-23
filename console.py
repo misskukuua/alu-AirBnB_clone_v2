@@ -17,8 +17,9 @@ class HBNBCommand(cmd.Cmd):
     """this class is entry point of the command interpreter
     """
     prompt = "(hbnb) "
-    all_classes = {"BaseModel", "User", "State", "City",
-                   "Amenity", "Place", "Review"}
+    all_classes = {"BaseModel": BaseModel, "User": User,
+                   "State": State, "City": City,
+                   "Amenity": Amenity, "Place": Place, "Review": Review}
 
     def emptyline(self):
         """Ignores empty spaces"""
@@ -45,13 +46,13 @@ class HBNBCommand(cmd.Cmd):
             obj = eval("{}()".format(my_list[0]))
             print("{}".format(obj.id))
             for num in range(1, len(my_list)):
-                my_list[num] = my_list[num].replace('=', ' ')
+                my_list[num] = my_list[num]
                 attributes = split(my_list[num])
                 attributes[1] = attributes[1].replace('_', ' ')
                 try:
                     var = eval(attributes[1])
                     attributes[1] = var
-                except:
+                except ValueError:
                     pass
                 if type(attributes[1]) is not tuple:
                     setattr(obj, attributes[0], attributes[1])
