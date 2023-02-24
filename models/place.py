@@ -1,12 +1,14 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
+import os
+
 from sqlalchemy import String, DateTime
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy import Float, Table
 from sqlalchemy.orm import relationship
 import models
 from models.base_model import BaseModel, Base
-from models.city import City
+# from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from os import getenv
@@ -64,14 +66,26 @@ class Place(BaseModel, Base):
             return [review for review in models.storage.all(Review)
                     if review.place_id == self.id]
 
+        if os.getenv("HBNB_TYPE_STORAGE") != "db":
+            @property
+            def reviews(self):
+                """Returns the list of Review instances with place_id equals
+                to the current Place.id."""
+
+                reviews = list(models.storage.all(Review).values())
+
+                return list(
+                    filter(lambda review: (review.place_id == self.id), reviews))
+
         @property
         def amenities(self):
-            # getting
-            return [amenity for amenity in models.storage.all(Amenity)
-                    if amenity.id in self.amenity_ids]
+            amenities = list(models.storage.all(Amenity).values())
+            return list(
+                filter(lambda amenity: (amenity.place_id in self.amenity_ids),
+                       amenities))
 
         @amenities.setter
-        def amenities(self, obj):
+        def amenities(self, value=None):
             # setting
-            if type(obj) == Amenity:
-                self.amenity_ids.append(obj.id)
+            if type(value) == Amenity:
+                self.amenity_ids.append(value.id)
