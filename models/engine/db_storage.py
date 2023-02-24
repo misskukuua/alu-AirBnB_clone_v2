@@ -26,15 +26,30 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """ init method """
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
-            os.getenv('HBNB_MYSQL_USER'),
-            os.getenv('HBNB_MYSQL_PWD'),
-            os.getenv('HBNB_MYSQL_HOST'),
-            os.getenv('HBNB_MYSQL_DB')), pool_pre_ping=True)
+        """Initialization"""
+        db_env = os.getenv("HBNB_ENV")
+        db_user = os.getenv("HBNB_MYSQL_USER")
+        db_pwd = os.getenv("HBNB_MYSQL_PWD")
+        db_host = os.getenv("HBNB_MYSQL_HOST")
+        db = os.getenv("HBNB_MYSQL_DB")
+        self.__engine = create_engine(
+            f"mysql+mysqldb://{db_user}:{db_pwd}@{db_host}/{db}",
+            pool_pre_ping=True)
 
-        if os.getenv('HBNB_ENV') == "test":
+        if db_env == 'test':
             Base.metadata.drop_all(self.__engine)
+
+    # def __init__(self):
+    #     """ init method """
+        # self.__engine = create_engine('mysql+mysqldb://{db_user}:{db_pwd}@'
+        #                               '{db_host}/{db}'.format(
+        #     os.getenv('HBNB_MYSQL_USER'),
+        #     os.getenv('HBNB_MYSQL_PWD'),
+        #     os.getenv('HBNB_MYSQL_HOST'),
+        #     os.getenv('HBNB_MYSQL_DB')), pool_pre_ping=True)
+        #
+        # if os.getenv('HBNB_ENV') == "test":
+        #     Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """ all method """
