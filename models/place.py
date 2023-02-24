@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 """This is the place class"""
-import shlex
-
 from sqlalchemy.ext.declarative import declarative_base
 
 from models import Amenity
