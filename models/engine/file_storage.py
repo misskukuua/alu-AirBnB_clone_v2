@@ -47,26 +47,17 @@ class FileStorage:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             self.__objects[key] = obj
 
-    # def save(self):
-    #     """serialize the file path to JSON file path
-    #     """
-    #     my_dict = {}
-    #     for key, value in self.__objects.items():
-    #         try:
-    #             my_dict[key] = value.to_dict()
-    #         except AttributeError:
-    #             print('No such attribute')
-    #     with open(self.__file_path, 'w', encoding="UTF-8") as f:
-    #         json.dump(my_dict, f)
-
     def save(self):
-        """Saves storage dictionary to file"""
-        with open(FileStorage.__file_path, 'w') as f:
-            temp = {}
-            temp.update(FileStorage.__objects)
-            for key, val in temp.items():
-                temp[key] = val.to_dict()
-            json.dump(temp, f)
+        """serialize the file path to JSON file path
+        """
+        my_dict = {}
+        for key, value in self.__objects.items():
+            try:
+                my_dict[key] = value.to_dict()
+            except AttributeError:
+                print('No such attribute')
+        with open(self.__file_path, 'w', encoding="UTF-8") as f:
+            json.dump(my_dict, f)
 
     def reload(self):
         """serialize the file path to JSON file path
