@@ -52,7 +52,10 @@ class FileStorage:
         """
         my_dict = {}
         for key, value in self.__objects.items():
-            my_dict[key] = value.to_dict()
+            try:
+                my_dict[key] = value.to_dict()
+            except AttributeError:
+                print('No such attribute')
         with open(self.__file_path, 'w', encoding="UTF-8") as f:
             json.dump(my_dict, f)
 
