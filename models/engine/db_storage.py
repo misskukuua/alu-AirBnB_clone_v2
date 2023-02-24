@@ -26,34 +26,15 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """Initialize object"""
-        user = os.getenv('HBNB_MYSQL_USER')
-        password = os.getenv('HBNB_MYSQL_PWD')
-        host = os.getenv('HBNB_MYSQL_HOST')
-        database = os.getenv('HBNB_MYSQL_DB')
-
-        self.__engine = sqlalchemy.create_engine(
-            'mysql+mysqldb://{}:{}@{}:3306/{}'
-            .format(user,
-                    password,
-                    host,
-                    database), pool_pre_ping=True)
+        """ init method """
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
+            os.getenv('HBNB_MYSQL_USER'),
+            os.getenv('HBNB_MYSQL_PWD'),
+            os.getenv('HBNB_MYSQL_HOST'),
+            os.getenv('HBNB_MYSQL_DB')), pool_pre_ping=True)
 
         if os.getenv('HBNB_ENV') == "test":
-            # from models.base_model import Base
             Base.metadata.drop_all(self.__engine)
-
-    # def __init__(self):
-    #     """ init method """
-        # self.__engine = create_engine('mysql+mysqldb://{db_user}:{db_pwd}@'
-        #                               '{db_host}/{db}'.format(
-        #     os.getenv('HBNB_MYSQL_USER'),
-        #     os.getenv('HBNB_MYSQL_PWD'),
-        #     os.getenv('HBNB_MYSQL_HOST'),
-        #     os.getenv('HBNB_MYSQL_DB')), pool_pre_ping=True)
-        #
-        # if os.getenv('HBNB_ENV') == "test":
-        #     Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """ all method """
