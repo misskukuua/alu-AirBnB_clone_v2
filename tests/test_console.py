@@ -86,7 +86,7 @@
 #             self.assertEqual(
 #                 "** class name missing **\n", f.getvalue())
 #         with patch('sys.stdout', new=StringIO()) as f:
-#             self.console.onecmd("show sasdfsdrf")
+#             self.console.onecmd("show asdfsdrfs")
 #             self.assertEqual(
 #                 "** class doesn't exist **\n", f.getvalue())
 #         with patch('sys.stdout', new=StringIO()) as f:
@@ -228,63 +228,91 @@
 
 
 # !/usr/bin/python3
-"""Test"""
+"""Test for console"""
 import unittest
+
+from console import HBNBCommand
 from unittest.mock import patch
 from io import StringIO
 import models
-from console import HBNBCommand
 
 
-class test_console(unittest.TestCase):
-    ''' Test the console module'''
+class ConsoleTestCase(unittest.TestCase):
+    """Test for console"""
 
     def setUp(self):
-        '''setup for'''
-        self.store = models.storage
-        self.buffer = StringIO()
         self.console = HBNBCommand()
+        self.stdout = StringIO()
+        self.storage = models.storage
 
     def tearDown(self):
-        ''''''
-        del self.buffer
-        del self.store
+        del self.stdout
+        del self.storage
+
+    def test_create(self):
+        """test create basic"""
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('create State')
+        state_id = self.stdout.getvalue()[:-1]
+        # print(state_id)
+        # print(len(state_id))
+        self.assertTrue(len(state_id) == 36)
+
+    def test_create_save(self):
+        """test create save"""
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('create State name="California')
+        state_id = self.stdout.getvalue()[:-1]
+        self.assertIsNotNone(
+            self.storage.all()["State.{}".format(state_id)])
+
+    def test_create_non_existing_class(self):
+        """test non-existing class"""
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('create MyModel')
+        self.assertEqual("** class doesn't exist **\n",
+                         self.stdout.getvalue())
 
     def test_all(self):
         """test all"""
-        with patch('sys.stdout', self.buffer):
-            self.console.onecmd('all Ade')
-            self.assertEqual("** class doesn't exist **\n",
-                             self.buffer.getvalue())
-        # with patch('sys.stdout', self.buffer):
-        #     self.console.onecmd("all State")
-        #     self.assertEqual("[]\n", self.buffer.getvalue())
-
-    def test_create(self):
-        """test create"""
-        with patch('sys.stdout', self.buffer):
-            self.console.onecmd('create State name="Abia"')
-            id = self.buffer.getvalue()
-            self.assertFalse(len(id) == 43)
-
-    def test_create_many(self):
-        """test create"""
-        with patch('sys.stdout', self.buffer):
+        with patch('sys.stdout', self.stdout):
             self.console.onecmd('create State name="California"')
-            state_id = self.buffer.getvalue()[:-1]
-        with patch('sys.stdout', self.buffer):
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('all State')
+        output = self.stdout.getvalue()[:-1]
+        self.assertIn("State", output)
+        self.assertIn("California", output)
+
+    def test_update(self):
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('create State name="California"')
+        state_id = self.stdout.getvalue()[:-1]
+        with patch('sys.stdout', self.stdout):
             self.console.onecmd(
-                'create City state_id={} name="San_Francisco"'.format(
-                    state_id))
-            city_id = self.buffer.getvalue()[:-1]
-        with patch('sys.stdout', self.buffer):
-            self.console.onecmd(
-                'create User email="my@me.com" password="pwd"'
-                'first_name="FN" last_name="LN"')
-            user_id = self.buffer.getvalue()[:-1]
-            # self.console.onecmd( 'create Place city_id={}
-            # user_id={} name="My_house"
-            # description="no_description_yet" number_rooms=4
-            # number_bathrooms=1 max_guest=3 price_by_night=100
-            # latitude=120.12 longitude=101.4'.format(city_id, user_id))
-            self.assertTrue(len(state_id) == 36)
+                'update State {} name="New California"'.format(state_id))
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('show State {}'.format(state_id))
+        output = self.stdout.getvalue()[:-1]
+        self.assertIn("California", output)
+
+    def test_destroy(self):
+        """test destroy"""
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('create State name="California"')
+        state_id = self.stdout.getvalue()[:-1]
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('destroy State {}'.format(state_id))
+        # with patch('sys.stdout', self.stdout):
+        #     self.console.onecmd('show State {}'.format(state_id))
+        # self.assertEqual("** no instance found **\n",
+        #                  self.stdout.getvalue())
+
+    def test_show(self):
+        """test show"""
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('create State name="California"')
+        state_id = self.stdout.getvalue()[:-1]
+        with patch('sys.stdout', self.stdout):
+            self.console.onecmd('show State {}'.format(state_id))
+        output = self.stdout.getvalue()[:-1]
+        self.assertIn("California", output)
