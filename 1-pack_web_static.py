@@ -6,6 +6,7 @@ import os
 
 
 def do_pack():
+    """The function that compress a folder before sending"""
     try:
         if not os.path.exists("versions"):
             local('mkdir versions')
