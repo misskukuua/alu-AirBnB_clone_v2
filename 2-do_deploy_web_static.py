@@ -1,17 +1,18 @@
 #!/usr/bin/python3
 """ Function that compress a folder """
 from datetime import datetime
+
 from fabric.api import *
 import shlex
 import os
 
 
-env.hosts = ['54.146.250.190', '54.234.36.81']
+env.hosts = ['54.85.27.206', '54.196.244.35']
 env.user = "ubuntu"
 
 
 def do_deploy(archive_path):
-    """ The fuction doing Deployments """
+    """ Deployments """
     if not os.path.exists(archive_path):
         return False
     try:
