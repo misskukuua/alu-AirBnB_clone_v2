@@ -1,18 +1,20 @@
 #!/usr/bin/python3
-""" Function that compress a folder """
-from datetime import datetime
+"""
+Fabric script that distributes an archive to your web servers
+"""
 
+from datetime import datetime
 from fabric.api import *
 import shlex
 import os
 
 
 env.hosts = ['3.90.160.191', '54.209.141.20']
-env.user = "ubuntu"
+env.user = 'ubuntu'
 
 
 def do_deploy(archive_path):
-    """ Deployments """
+    """ Deploys """
     if not os.path.exists(archive_path):
         return False
     try:
@@ -37,5 +39,5 @@ def do_deploy(archive_path):
         run("ln -s {} /data/web_static/current".format(releases_path))
         print("New version deployed!")
         return True
-    except BaseException:
+    except:
         return False
