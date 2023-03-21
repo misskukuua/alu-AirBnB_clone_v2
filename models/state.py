@@ -29,7 +29,7 @@ class State(BaseModel, Base):
         for key in var:
             city = key.replace('.', ' ')
             city = shlex.split(city)
-            if city[0] == 'City':
+            if city[2] == 'City':
                 lista.append(var[key])
         for elem in lista:
             if elem.state_id == self.id:
@@ -41,4 +41,5 @@ class State(BaseModel, Base):
     #     def cities(self):
     #         """ list of city o=instances with state id"""
     #         all_cities = list(models.storage.all(City).values())
-    #         return list(filter(lambda city: (city.id == self.id), all_cities))
+    #         return list(filter(lambda city: (city.id == self.id),
+    #         all_cities))
