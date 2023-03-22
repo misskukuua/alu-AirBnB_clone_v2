@@ -1,14 +1,20 @@
 #!/usr/bin/python3
 """This is the file storage class for AirBnB"""
 import json
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
+# from models.base_model import BaseModel
+# from models.user import User
+# from models.state import State
+# from models.city import City
+# from models.amenity import Amenity
+# from models.place import Place
+# from models.review import Review
 import shlex
+#
+# lasses = {
+#             'BaseModel': BaseModel, 'User': User, 'Place': Place,
+#             'State': State, 'City': City, 'Amenity': Amenity,
+#             'Review': Review
+#         }
 
 
 class FileStorage:
@@ -32,9 +38,9 @@ class FileStorage:
             for key in dictionary:
                 partition = key.replace('.', ' ')
                 partition = shlex.split(partition)
-                if (partition[0] == cls.__name__):
+                if partition[0] == cls.__name__:
                     dic[key] = self.__objects[key]
-            return (dic)
+            return dic
         else:
             return self.__objects
 
@@ -59,14 +65,38 @@ class FileStorage:
         with open(self.__file_path, 'w', encoding="UTF-8") as f:
             json.dump(my_dict, f)
 
+    # def reload(self):
+    #     """serialize the file path to JSON file path
+    #     """
+    #     try:
+    #         with open(self.__file_path, 'r', encoding="UTF-8") as f:
+    #             for key, value in (json.load(f)).items():
+    #                 value = eval(value["__class__"])(**value)
+    #                 self.__objects[key] = value
+    #     except FileNotFoundError:
+    #         pass
+
     def reload(self):
-        """serialize the file path to JSON file path
-        """
+        """Loads storage dictionary from file"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+
+        classes = {
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
         try:
-            with open(self.__file_path, 'r', encoding="UTF-8") as f:
-                for key, value in (json.load(f)).items():
-                    value = eval(value["__class__"])(**value)
-                    self.__objects[key] = value
+            temp = {}
+            with open(FileStorage.__file_path, 'r') as f:
+                temp = json.load(f)
+                for key, val in temp.items():
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
@@ -76,6 +106,7 @@ class FileStorage:
         if obj:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             del self.__objects[key]
+            self.save()
 
     def close(self):
         """ calls reload()
