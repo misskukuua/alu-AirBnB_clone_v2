@@ -29,7 +29,7 @@ class State(BaseModel, Base):
         for key in var:
             city = key.replace('.', ' ')
             city = shlex.split(city)
-            if city[2] == 'City':
+            if city[0] == 'City':
                 lista.append(var[key])
         for elem in lista:
             if elem.state_id == self.id:
