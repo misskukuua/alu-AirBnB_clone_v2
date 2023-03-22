@@ -21,36 +21,10 @@ class State(BaseModel, Base):
     cities = relationship("City", backref="state",
                           cascade='all, delete,delete-orphan')
 
-    # @property
-    # def cities(self):
-    #     var = models.storage.all()
-    #     lista = []
-    #     result = []
-    #     for key in var:
-    #         city = key.replace('.', ' ')
-    #         city = shlex.split(city)
-    #         if city[0] == 'City':
-    #             lista.append(var[key])
-    #     for elem in lista:
-    #         if elem.state_id == self.id:
-    #             result.append(elem)
-    #     return result
-
-    # if os.getenv("HBNB_TYPE_STORAGE") != "db":
-    #     @property
-    #     def cities(self):
-    #         """ list of city o=instances with state id"""
-    #         all_cities = list(models.storage.all(City).values())
-    #         return list(filter(lambda city: (city.id == self.id),
-    #                            all_cities))
-
-    def cities(self):
-        """
-        Returns the list of City objects from storage linked to the current State.
-        """
-        from models import storage
-        cities = []
-        for city in storage.all("City").values():
-            if city.state_id == self.id:
-                cities.append(city)
-        return cities
+    if os.getenv("HBNB_TYPE_STORAGE") != "db":
+        @property
+        def cities(self):
+            """ list of city o=instances with state id"""
+            all_cities = list(models.storage.all(City).values())
+            return list(filter(lambda city: (city.id == self.id),
+                               all_cities))
