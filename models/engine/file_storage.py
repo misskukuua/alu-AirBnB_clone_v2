@@ -9,6 +9,8 @@ import json
 # from models.place import Place
 # from models.review import Review
 import shlex
+
+
 #
 # lasses = {
 #             'BaseModel': BaseModel, 'User': User, 'Place': Place,
@@ -58,45 +60,18 @@ class FileStorage:
         """
         my_dict = {}
         for key, value in self.__objects.items():
-            try:
-                my_dict[key] = value.to_dict()
-            except AttributeError:
-                print('No such attribute')
+            my_dict[key] = value.to_dict()
         with open(self.__file_path, 'w', encoding="UTF-8") as f:
             json.dump(my_dict, f)
 
-    # def reload(self):
-    #     """serialize the file path to JSON file path
-    #     """
-    #     try:
-    #         with open(self.__file_path, 'r', encoding="UTF-8") as f:
-    #             for key, value in (json.load(f)).items():
-    #                 value = eval(value["__class__"])(**value)
-    #                 self.__objects[key] = value
-    #     except FileNotFoundError:
-    #         pass
-
     def reload(self):
-        """Loads storage dictionary from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
-
-        classes = {
-            'BaseModel': BaseModel, 'User': User, 'Place': Place,
-            'State': State, 'City': City, 'Amenity': Amenity,
-            'Review': Review
-        }
+        """serialize the file path to JSON file path
+        """
         try:
-            temp = {}
-            with open(FileStorage.__file_path, 'r') as f:
-                temp = json.load(f)
-                for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
+            with open(self.__file_path, 'r', encoding="UTF-8") as f:
+                for key, value in (json.load(f)).items():
+                    value = eval(value["__class__"])(**value)
+                    self.__objects[key] = value
         except FileNotFoundError:
             pass
 
