@@ -2,7 +2,6 @@
 """ New engine DBStorage """
 import sqlalchemy
 from sqlalchemy import (create_engine)
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import Base
 from models.user import User
@@ -12,7 +11,6 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 import os
-from models.base_model import *
 
 classes = {
     # 'BaseModel': BaseModel,
@@ -29,30 +27,14 @@ class DBStorage:
 
     def __init__(self):
         """ init method """
-        user = os.getenv('HBNB_MYSQL_USER')
-        passwd = os.getenv('HBNB_MYSQL_PWD')
-        host = os.getenv('HBNB_MYSQL_HOST')
-        db = os.getenv('HBNB_MYSQL_DB')
-        port = os.getenv('HBNB_MYSQL_PORT')
-        env = os.getenv('HBNB_ENV')
-        # storage_type = os.getenv('HBNB_STORAGE_TYPE')
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
+            os.getenv('HBNB_MYSQL_USER'),
+            os.getenv('HBNB_MYSQL_PWD'),
+            os.getenv('HBNB_MYSQL_HOST'),
+            os.getenv('HBNB_MYSQL_DB')), pool_pre_ping=True)
 
-        db_path = ('mysql+mysqldb://{}:{}@{}/{}'
-                   .format(user, passwd, host, db))
-
-        self.__engine = create_engine(db_path, pool_pre_ping=True)
-        # drop all tables if the environment variable HBNB_ENV is equal to test
-        if env == 'test':
+        if os.getenv('HBNB_ENV') == "test":
             Base.metadata.drop_all(self.__engine)
-
-        # self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
-        #     os.getenv('HBNB_MYSQL_USER'),
-        #     os.getenv('HBNB_MYSQL_PWD'),
-        #     os.getenv('HBNB_MYSQL_HOST'),
-        #     os.getenv('HBNB_MYSQL_DB')), pool_pre_ping=True)
-        #
-        # if os.getenv('HBNB_ENV') == "test":
-        #     Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """ all method """
@@ -92,8 +74,10 @@ class DBStorage:
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         session = scoped_session(session_factory)
+        if remove:
+            session.remove()
         self.__session = session()
 
     def close(self):
         """ close method """
-        self.reload.close()
+        self.reload(remove=True)
