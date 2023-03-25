@@ -14,13 +14,13 @@ def cities_by_states():
         States/cities sorted by name
     """
     states = storage.all("State")
-    return render_template("8-cities_by_states.html", states=states)
+    return render_template("8-cities_by_states.html", states=states.values())
 
 
 @app.teardown_appcontext
-def teardown(excted):
+def teardown(self):
     storage.close()
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", port=5000, debug=True)
